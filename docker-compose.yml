@@ -40,6 +40,33 @@ services:
     ulimits:
       nproc: 100000
       nofile: 100000
+    environment:
+      RUST_LOG: "error"
+
+  vfn:
+    image: "${OL_IMAGE}"
+    container_name: 0l-vfn
+    restart: "always"
+    network_mode: "host"
+    pid: "host"
+    volumes:
+      - node_data:/root/.0L
+    entrypoint: ""
+    command:
+      [
+        "diem-node",
+        "--config",
+        "/root/.0L/vfn.node.yaml"
+      ]
+    ports:
+      - 6179:6179
+      - 6180:6180
+      - 8080:8080
+    ulimits:
+      nproc: 100000
+      nofile: 100000
+    environment:
+      RUST_LOG: "error"
 
   validator:
     image: "${OL_IMAGE}"
@@ -63,6 +90,8 @@ services:
     ulimits:
       nproc: 100000
       nofile: 100000
+    environment:
+      RUST_LOG: "error"
 
   tower:
     image: "${OL_IMAGE}"
