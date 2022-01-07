@@ -74,18 +74,18 @@ services:
       - node_data:/root/.0L
     # Todo (nourspace): find a way to toggle these modes using flags or env vars
     # mode 1: initial start uses upstream as fullnode/validator are not yet synced
-    entrypoint: [ "tower", "--use-upstream-url", "--verbose", "start" ]
+    #entrypoint: [ "tower", "--use-upstream-url", "--verbose", "start" ]
     # mode 2: fullnode/validator are synced
     #entrypoint: [ "tower", "--verbose", "start" ]
     # mode 3: run as operator while in validator mode
-    #entrypoint: [ "tower", "--is-operator", "--verbose", "start" ]
+    entrypoint: [ "tower", "--is-operator", "--verbose", "start" ]
     ulimits:
       nproc: 100000
       nofile: 100000
     environment:
       NODE_ENV: "prod"
-      TEST: "y"
-      MNEM: "${OL_MNEM}"
+      #TEST: "y"
+      #MNEM: "${OL_MNEM}"
 
   monitor:
     image: "${OL_IMAGE}"
