@@ -1,135 +1,78 @@
 version: "3.8"
 services:
-  debug:
+
+  shell:
     image: "${OL_IMAGE}"
-    container_name: 0l-debug
+    container_name: 0l-shell
     restart: "no"
-    network_mode: "host"
-    pid: "host"
+    network_mode: host
+    pid: host
     volumes:
-      - node_data:/root/.0L
+      - "node_data:/root/.0L"
     entrypoint: [ "bash" ]
-    ports:
-      - 16179:6179
-      - 16180:6180
-      - 18080:8080
-      - 13030:3030
     ulimits:
       nproc: 100000
       nofile: 100000
+    env_file:
+      - "./.env"
 
-  fullnode:
+  node:
     image: "${OL_IMAGE}"
-    container_name: 0l-fullnode
+    container_name: "0l-${OL_NODE_MODE}"
     restart: "always"
-    network_mode: "host"
-    pid: "host"
+    network_mode: host
+    pid: host
     volumes:
-      - node_data:/root/.0L
-    entrypoint: ""
-    command:
+      - "node_data:/root/.0L"
+    entrypoint:
       [
         "diem-node",
         "--config",
-        "/root/.0L/fullnode.node.yaml"
+        "/root/.0L/${OL_NODE_MODE}.node.yaml"
       ]
     ports:
-      - 6179:6179
-      - 6180:6180
-      - 8080:8080
+      - "6179:6179"
+      - "6180:6180"
+      - "8080:8080"
     ulimits:
       nproc: 100000
       nofile: 100000
-    environment:
-      RUST_LOG: "error"
-
-  vfn:
-    image: "${OL_IMAGE}"
-    container_name: 0l-vfn
-    restart: "always"
-    network_mode: "host"
-    pid: "host"
-    volumes:
-      - node_data:/root/.0L
-    entrypoint: ""
-    command:
-      [
-        "diem-node",
-        "--config",
-        "/root/.0L/vfn.node.yaml"
-      ]
-    ports:
-      - 6179:6179
-      - 6180:6180
-      - 8080:8080
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    environment:
-      RUST_LOG: "error"
-
-  validator:
-    image: "${OL_IMAGE}"
-    container_name: 0l-validator
-    restart: "always"
-    network_mode: "host"
-    pid: "host"
-    volumes:
-      - node_data:/root/.0L
-    entrypoint: ""
-    command:
-      [
-        "diem-node",
-        "--config",
-        "/root/.0L/validator.node.yaml"
-      ]
-    ports:
-      - 6179:6179
-      - 6180:6180
-      - 8080:8080
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    environment:
-      RUST_LOG: "error"
+    env_file:
+      - "./.env"
 
   tower:
     image: "${OL_IMAGE}"
     container_name: 0l-tower
     restart: "always"
-    network_mode: "host"
-    pid: "host"
+    network_mode: host
+    pid: host
     volumes:
-      - node_data:/root/.0L
-    # Todo (nourspace): find a way to toggle these modes using flags or env vars
-    # mode 1: initial start uses upstream as fullnode/validator are not yet synced
-    #entrypoint: [ "tower", "--use-upstream-url", "--verbose", "start" ]
-    # mode 2: fullnode/validator are synced
-    #entrypoint: [ "tower", "--verbose", "start" ]
-    # mode 3: run as operator while in validator mode
-    entrypoint: [ "tower", "--is-operator", "--verbose", "start" ]
+      - "node_data:/root/.0L"
+    entrypoint: [ "tower", "${OL_TOWER_OPERATOR}", "${OL_TOWER_VERBOSE}", "start" ]
     ulimits:
       nproc: 100000
       nofile: 100000
     environment:
       NODE_ENV: "prod"
-      #TEST: "y"
-      #MNEM: "${OL_MNEM}"
+    env_file:
+      - "./.env"
 
   monitor:
     image: "${OL_IMAGE}"
     container_name: 0l-monitor
     restart: "always"
-    network_mode: "host"
-    pid: "host" # required to detect processes?
+    network_mode: host # Fixme (nourspace): required to detect node processes?
+    pid: host # Fixme (nourspace) required to detect node processes?
     volumes:
-      - node_data:/root/.0L
+      - "node_data:/root/.0L"
     entrypoint: [ "ol", "serve" ]
     ports:
-      - 3030:3030
+      - "3030:3030"
     ulimits:
       nproc: 100000
       nofile: 100000
+    env_file:
+      - "./.env"
 
 volumes:
   node_data:

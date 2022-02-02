@@ -33,9 +33,9 @@ FROM toolchain as builder
 WORKDIR /libra
 
 # Clone given release tag or branch of this repo
-ARG TAG=v5.0.6
+ARG BRANCH=main
 # Fixme(nourspace): depending where these tools are hosted, we might not need to pull
-RUN git clone --branch ${TAG} --depth 1 https://github.com/OLSF/libra.git /libra
+RUN git clone --branch ${BRANCH} --depth 1 https://github.com/OLSF/libra.git /libra
 
 # Build 0L binaries
 RUN RUSTC_WRAPPER=sccache make bins
@@ -50,11 +50,7 @@ RUN apt-get update && apt-get install -y \
   libssl1.1 \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV PATH="/0L/bin:${PATH}" \
-  # Capture backtrace on error
-  RUST_BACKTRACE="1"
-
-WORKDIR /0L
+ENV PATH="/0L/bin:${PATH}"
 
 # Copy binaries from builder
 COPY --from=builder [ \
@@ -68,3 +64,5 @@ COPY --from=builder [ \
   "/libra/target/release/onboard", \
   "/0L/bin/" \
 ]
+
+WORKDIR /root/.0L

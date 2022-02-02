@@ -1,32 +1,24 @@
 version: '3'
 
 vars:
-  IMAGE: "nourspace/0l"
-  TAG: "v5.0.6"
-  
-tasks:
+  # Extracts values from .env file
+  IMAGE:
+    sh: grep -v '^#' .env | grep -e "OL_IMAGE" | sed -e 's/.*=//'
+  BRANCH:
+    sh: grep -v '^#' .env | grep -e "OL_BRANCH" | sed -e 's/.*=//'
 
+tasks:
   docker:build:
-    desc: Build docker image
+    desc: "Build docker image"
     cmds:
-      - docker build --build-arg TAG={{.TAG}} --tag {{.IMAGE}}:{{.TAG}} .
+      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}} .
 
   docker:push:
-    desc: Push docker image
+    desc: "Push docker image"
     cmds:
-      - docker push {{.IMAGE}}:{{.TAG}}
+      - docker push {{.IMAGE}}
 
-  docker:shell:
-    desc: "Start a shell in node"
+  shell:
+    desc: "Start a shell in container"
     cmds:
-      - docker run --rm -it {{.IMAGE}}:{{.TAG}} /bin/bash
-
-  onboard:val:
-    cmds:
-      - '# Onboarding validator!'
-      - docker run --rm -it {{.IMAGE}}:{{.TAG}} onboard:val -- {{.CLI_ARGS}}
-
-  node:account.json:
-    cmds:
-      - 'Retriving account.json'
-      - docker cp .....
+      - docker-compose run --rm shell
