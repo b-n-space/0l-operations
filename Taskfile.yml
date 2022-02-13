@@ -1,0 +1,24 @@
+version: '3'
+
+vars:
+  # Extracts values from .env file
+  IMAGE:
+    sh: grep -v '^#' .env | grep -e "OL_IMAGE" | sed -e 's/.*=//'
+  BRANCH:
+    sh: grep -v '^#' .env | grep -e "OL_BRANCH" | sed -e 's/.*=//'
+
+tasks:
+  docker:build:
+    desc: "Build docker image"
+    cmds:
+      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}} .
+
+  docker:push:
+    desc: "Push docker image"
+    cmds:
+      - docker push {{.IMAGE}}
+
+  shell:
+    desc: "Start a shell in container"
+    cmds:
+      - docker-compose run --rm shell
