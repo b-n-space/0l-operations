@@ -1,6 +1,6 @@
-# 0l-validator-ops
+# 0l-Operations
 
-Tooling for validator operations of https://0l.network
+Tooling for operations of https://0l.network
 
 ## Requirements
 

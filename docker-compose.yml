@@ -19,7 +19,7 @@ services:
   node:
     image: "${OL_IMAGE}"
     container_name: "0l-${OL_NODE_MODE}"
-    restart: "always"
+    restart: "on-failure"
     network_mode: host
     pid: host
     volumes:
@@ -43,7 +43,7 @@ services:
   tower:
     image: "${OL_IMAGE}"
     container_name: 0l-tower
-    restart: "always"
+    restart: "on-failure"
     network_mode: host
     pid: host
     volumes:
@@ -60,7 +60,7 @@ services:
   monitor:
     image: "${OL_IMAGE}"
     container_name: 0l-monitor
-    restart: "always"
+    restart: "on-failure"
     network_mode: host # Fixme (nourspace): required to detect node processes?
     pid: host # Fixme (nourspace) required to detect node processes?
     volumes:
