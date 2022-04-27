@@ -23,13 +23,22 @@ Tooling for operations of https://0l.network
 > These images were built using the [Dockerfile](./Dockerfile) in this repo and come without any guaranties.
 
 - Set these env variables
-  - `OL_BRANCH`: [Libra](https://github.com/OLSF/libra/)'s release tag or branch to check out and build
+  - `OL_BRANCH`: [0L](https://github.com/OLSF/libra/)'s release tag or branch to check out and build
   - `OL_IMAGE`: Docker image (`username/image:tag`), used to build/push images, also to run services
 
 - Build and push docker images
   ```shell
   task docker:build
   task docker:push
+  ```
+
+- [Optional] Build and push builder docker images
+
+  > `builder` image is a stage in Dockerfile that has 0L source, built binaries, and Rust toolchain
+
+  ```shell
+  task docker:build:builder
+  task docker:push:builder
   ```
 
 ### Operate 0L node (Fullnode or Validator/VFN)
@@ -57,7 +66,7 @@ Tooling for operations of https://0l.network
   - `OL_DATA_DIR`: points to host path where 0L data directory is located
   > Create this directory if it does not yet exist
   - `OL_TOWER_OPERATOR=''`: this is only for validators that own an operator account
-  - `OL_TOWER_USE_UPSTREAM='--use-upstream-url'`: this makes sure the tower is using the upstream urls
+  - `OL_TOWER_USE_FIRST_UPSTREAM='--use-first-url'`: this makes sure the tower is using the upstream urls
   - `TEST=y`: allows reading mnemonic seed phrase from env
   > There is a [PR](https://github.com/OLSF/libra/pull/979) that allows reading `MNEM` without setting `TEST=y`
   - `MNEM`: the mnemonic seed phrase generated during account creation
@@ -103,6 +112,10 @@ This is a list of some useful commands.
 # Start a shell service with all 0L binaries available
 # Useful to run `txs` commands
 docker-compose run --rm shell
+
+# Start a builder service with all 0L source and binaries available
+# Useful to run `make` commands
+docker-compose run --rm builder
 
 # Start service(s)
 docker-compose up tower 
@@ -166,6 +179,10 @@ Start web monitor.
 ### `shell` service
 
 Run different ol and other commands inside an isolated container.
+
+### `builder` service
+
+Run different ol and other make commands inside an isolated container with access to 0L source under `/libra` and Rust toolchain.
 
 
 ## Notes

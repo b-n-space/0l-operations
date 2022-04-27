@@ -35,10 +35,15 @@ WORKDIR /libra
 # Clone given release tag or branch of this repo
 ARG BRANCH=main
 # Fixme(nourspace): depending where these tools are hosted, we might not need to pull
-RUN git clone --branch ${BRANCH} --depth 1 https://github.com/OLSF/libra.git /libra
+RUN echo "Checking out '${BRANCH}'..." \
+ && git clone --branch ${BRANCH} --depth 1 https://github.com/OLSF/libra.git /libra \
+ && echo "Commit hash: $(git rev-parse HEAD)"
 
 # Build 0L binaries
 RUN RUSTC_WRAPPER=sccache make bins
+
+# Add target binaries to PATH
+ENV PATH="/libra/target/release:${PATH}"
 
 # Production image
 # Todo(nourspace): find a smaller base image
