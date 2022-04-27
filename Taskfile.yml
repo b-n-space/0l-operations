@@ -13,12 +13,29 @@ tasks:
     cmds:
       - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}} .
 
+  docker:build:builder:
+    desc: "Build docker [builder] image"
+    cmds:
+      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}}-builder --target builder .
+
   docker:push:
     desc: "Push docker image"
     cmds:
       - docker push {{.IMAGE}}
 
+  docker:push:builder:
+    desc: "Push docker [builder] image"
+    cmds:
+      - docker push {{.IMAGE}}-builder
+
   shell:
     desc: "Start a shell in container"
     cmds:
       - docker-compose run --rm shell
+    ignore_error: true
+
+  builder:
+    desc: "Start a builder container"
+    cmds:
+      - docker-compose run --rm builder
+    ignore_error: true
