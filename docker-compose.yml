@@ -1,45 +1,33 @@
+##########      Defaults    #############
+x-defaults: &defaults
+  image: "${OL_IMAGE}"
+  restart: "on-failure"
+  network_mode: host  # Fixme (nourspace): required to detect node processes?
+  pid: host           # Fixme (nourspace): required to detect node processes?
+  volumes:
+    - "node_data:/root/.0L"
+  ulimits:
+    nproc: 100000
+    nofile: 100000
+  entrypoint: [ "" ]
+  env_file:
+    - "./.env"
+
+x-util-defaults: &util-defaults
+  <<: *defaults
+  restart: "no"
+  command: [ "tail", "-f", "/dev/null" ]
+
+###########################################
+
 version: "3.8"
 services:
-
-  shell:
-    image: "${OL_IMAGE}"
-    container_name: 0l-shell
-    restart: "no"
-    network_mode: host
-    pid: host
-    volumes:
-      - "node_data:/root/.0L"
-    entrypoint: [ "bash" ]
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    env_file:
-      - "./.env"
-
-  builder:
-    image: "${OL_IMAGE}-builder"
-    container_name: 0l-builder
-    restart: "no"
-    network_mode: host
-    pid: host
-    volumes:
-      - "node_data:/root/.0L"
-    entrypoint: [ "bash" ]
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    env_file:
-      - "./.env"
+  ##########  Main services   #############
 
   node:
-    image: "${OL_IMAGE}"
+    <<: *defaults
     container_name: "0l-${OL_NODE_MODE}"
-    restart: "on-failure"
-    network_mode: host
-    pid: host
-    volumes:
-      - "node_data:/root/.0L"
-    entrypoint:
+    command: 
       [
         "diem-node",
         "--config",
@@ -49,51 +37,37 @@ services:
       - "6179:6179"
       - "6180:6180"
       - "8080:8080"
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    env_file:
-      - "./.env"
 
   tower:
-    image: "${OL_IMAGE}"
+    <<: *defaults
     container_name: 0l-tower
-    restart: "on-failure"
-    network_mode: host
-    pid: host
-    depends_on:
-      - node
-    volumes:
-      - "node_data:/root/.0L"
-    entrypoint: "tower ${OL_TOWER_OPERATOR} ${OL_TOWER_USE_FIRST_UPSTREAM} ${OL_TOWER_VERBOSE} start"
-    ulimits:
-      nproc: 100000
-      nofile: 100000
+    command: "tower ${OL_TOWER_OPERATOR} ${OL_TOWER_USE_FIRST_UPSTREAM} ${OL_TOWER_VERBOSE} start"
     environment:
       NODE_ENV: "prod"
       TEST: "${OL_TOWER_TEST-n}"
-    env_file:
-      - "./.env"
 
   monitor:
-    image: "${OL_IMAGE}"
+    <<: *defaults
     container_name: 0l-monitor
-    restart: "on-failure"
-    network_mode: host # Fixme (nourspace): required to detect node processes?
-    pid: host # Fixme (nourspace) required to detect node processes?
-    depends_on:
-      - node
-      - tower
-    volumes:
-      - "node_data:/root/.0L"
-    entrypoint: [ "ol", "serve" ]
+    command: [ "ol", "serve" ]
     ports:
       - "3030:3030"
-    ulimits:
-      nproc: 100000
-      nofile: 100000
-    env_file:
-      - "./.env"
+
+  ########## Utility services #############
+
+  shell:
+    <<: *util-defaults
+    container_name: 0l-shell
+
+  source:
+    <<: *util-defaults
+    image: "${OL_IMAGE}-source"
+    container_name: 0l-source
+
+  builder:
+    <<: *util-defaults
+    image: "${OL_IMAGE}-builder"
+    container_name: 0l-builder
 
 volumes:
   node_data:

@@ -32,6 +32,15 @@ Tooling for operations of https://0l.network
   task docker:push
   ```
 
+- [Optional] Build and push source docker images
+
+  > `source` image is a stage in Dockerfile that has 0L source and Rust toolchain
+
+  ```shell
+  task docker:build:source
+  task docker:push:source
+  ```
+
 - [Optional] Build and push builder docker images
 
   > `builder` image is a stage in Dockerfile that has 0L source, built binaries, and Rust toolchain
@@ -98,7 +107,7 @@ Tooling for operations of https://0l.network
 
   ```shell
   # Start Tower service in background
-  docker-compose up -d --no-deps tower
+  docker-compose up -d tower
 
   # Tail logs
   docker-compose logs -f --tail 50 tower
@@ -109,13 +118,7 @@ Tooling for operations of https://0l.network
 This is a list of some useful commands.
 
 ```shell
-# Start a shell service with all 0L binaries available
-# Useful to run `txs` commands
-docker-compose run --rm shell
-
-# Start a builder service with all 0L source and binaries available
-# Useful to run `make` commands
-docker-compose run --rm builder
+########## Main Services #########
 
 # Start service(s)
 docker-compose up tower 
@@ -139,10 +142,37 @@ docker-compose up -d --force-recreate node
 docker-compose stop node
 
 # Stops containers and removes containers, networks, volumes, and images
+# Data directory on the host specified with `$OL_DATA_DIR` won't be deleted. Only the Docker volume will be unmounted
 docker-compose down
+
+########## Utility Services #########
+
+# Start a shell service with all 0L binaries available
+# Useful to run `txs` commands
+docker-compose run --rm shell bash
+
+# Start a builder service with all 0L source and binaries available
+# Useful to run `make` commands
+docker-compose run --rm builder bash
+
+# Start a builder service and exec into it to keep the container and its files after exiting
+docker-compose up -d builder
+docker-compose exec builder bash
+
+# Use Task to start utility services
+task shell
+task source
+task builder
+
+# Clean all utility containers with their data
+task clean-utils
 ```
 
-## Services
+---
+
+## Main Services
+
+This are the main services commonly run by node operators.
 
 ### `node` service
 
@@ -176,25 +206,43 @@ Validators have operator accounts that can be used to start tower without provid
 
 Start web monitor.
 
+---
+
+## Utility Services
+
+These services are mostly for debugging and developing inside containers.
+
 ### `shell` service
 
-Run different ol and other commands inside an isolated container.
+Run different ol and other commands inside an isolated container. This uses the production image
+
+### `source` service
+
+Run make commands inside an isolated container with access to 0L source under `/root/libra` and Rust toolchain.
 
 ### `builder` service
 
-Run different ol and other make commands inside an isolated container with access to 0L source under `/libra` and Rust toolchain.
+Run different ol and other make commands inside an isolated container with access to 0L source under `/root/libra` and Rust toolchain.
 
+
+---
 
 ## Notes
 
+### General
+
+- Some services like `monitor` expect other services like `node` and `tower` to be running first.
+
+
 ### Miners
 
-- When running a **fullnode** or a **validator setup**, `node` service must be running before other services `monitor` and `tower`
-  This is not the case for **miners** as they don't need to operate a node.
-  Therefore, running tower with `--no-deps` flag is necessary when not operating own fullnode.
+- Make sure to set `default_node` and `upstream_nodes` in `~/.0L/0L.toml` with IPs of fullnodes.
+  https://github.com/OLSF/seed-peers/blob/main/fullnode_seed_playlist.json
 
 - `TEST` variable should not be included in any services other than `tower`
   Pending PR https://github.com/OLSF/libra/pull/979
+
+---
 
 ## Todos
 
