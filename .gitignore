@@ -1,2 +1,4 @@
 .env
 cron-runs.log
+venv/
+__pycache__

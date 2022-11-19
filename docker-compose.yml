@@ -54,6 +54,15 @@ services:
     ports:
       - "3030:3030"
 
+  remote:
+    image: "${OL_TOOLS_IMAGE}"
+    container_name: 0l-remote-operator
+    restart: "on-failure"
+    ports:
+      - "3333:3333"
+    volumes:
+      - "./remote_operator:/code"
+
   ########## Utility services #############
 
   shell:
