@@ -76,7 +76,7 @@ Tooling for operations of https://0l.network
   > Create this directory if it does not yet exist
   - `OL_TOWER_OPERATOR=''`: this is only for validators that own an operator account
   - `OL_TOWER_USE_FIRST_UPSTREAM='--use-first-url'`: this makes sure the tower is using the upstream urls
-  - `TEST=y`: allows reading mnemonic seed phrase from env
+  - `OL_TOWER_TEST=y`: allows reading mnemonic seed phrase from env
   > There is a [PR](https://github.com/OLSF/libra/pull/979) that allows reading `MNEM` without setting `TEST=y`
   - `MNEM`: the mnemonic seed phrase generated during account creation
 

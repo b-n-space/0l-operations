@@ -6,9 +6,10 @@ x-defaults: &defaults
   pid: host           # Fixme (nourspace): required to detect node processes?
   volumes:
     - "node_data:/root/.0L"
+    - "epoch_archive:/root/epoch-archive"
   ulimits:
-    nproc: 100000
-    nofile: 100000
+    nproc: 500000
+    nofile: 500000
   entrypoint: [ "" ]
   env_file:
     - "./.env"
@@ -27,7 +28,7 @@ services:
   node:
     <<: *defaults
     container_name: "0l-${OL_NODE_MODE}"
-    command: 
+    command:
       [
         "diem-node",
         "--config",
@@ -76,3 +77,9 @@ volumes:
       type: none
       o: bind
       device: "${OL_DATA_DIR}"
+  epoch_archive:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${OL_EPOCH_ARCHIVE_DIR}"

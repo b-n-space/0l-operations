@@ -9,9 +9,11 @@ vars:
 
 tasks:
   docker:build:
-    desc: "Build docker image"
+    desc: "Build docker images"
     cmds:
       - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}} .
+      - task docker:build:source
+      - task docker:build:builder
 
   docker:build:source:
     desc: "Build docker [source] image"
