@@ -58,3 +58,11 @@ Allows 0L node operators to perform critical operations remotely.
 - [ ] Add basic auth
 - [ ] Publish initial version with restart feature
 - [ ] Implement logging and backups
+
+## Dynamic Operations
+
+Using operations.json node owners can define arbitrary allowed operations that suit their needs without having to update
+the service code.
+
+The main reason behind this is that not everyone is running the docker setup, and it would not be as useful to hardcode
+docker-related operations only.
