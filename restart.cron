@@ -1,0 +1,3 @@
+58 * * * *	(/usr/local/bin/docker-compose -f /root/0l-operations/docker-compose.yml stop node) 2>&1 | ts '\%Y-\%m-\%d \%H:\%M:\%S' >> /root/0l-operations/cron-runs.log
+
+0  * * * *  (/usr/local/bin/docker-compose -f /root/0l-operations/docker-compose.yml up --force-recreate -d node) 2>&1 | ts '\%Y-\%m-\%d \%H:\%M:\%S' >> /root/0l-operations/cron-runs.log

@@ -224,6 +224,16 @@ Run make commands inside an isolated container with access to 0L source under `/
 
 Run different ol and other make commands inside an isolated container with access to 0L source under `/root/libra` and Rust toolchain.
 
+---
+
+## Restarting Nodes with Cron
+
+In some cases when the network is having syncing issues we resort to restarting nodes on the top of the hour. Since
+not every node operator might be available, setting a cronjob to restart nodes seemed like a good work around.
+
+Add the content of [restart.cron](./restart.cron) to `crontab -e`. Make sure to update paths as necessary. It is meant to stop node at :58 and start it again on :00.
+
+The cron output will be logged to `./cron-runs.log
 
 ---
 
