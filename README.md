@@ -23,7 +23,7 @@ Tooling for operations of https://0l.network
 > These images were built using the [Dockerfile](./Dockerfile) in this repo and come without any guaranties.
 
 - Set these env variables
-  - `OL_BRANCH`: [0L](https://github.com/OLSF/libra/)'s release tag or branch to check out and build
+  - `OL_BRANCH`: [0L](https://github.com/0LNetworkCommunity/libra/)'s release tag or branch to check out and build
   - `OL_IMAGE`: Docker image (`username/image:tag`), used to build/push images, also to run services
 
 - Build and push docker images
@@ -77,10 +77,10 @@ Tooling for operations of https://0l.network
   - `OL_TOWER_OPERATOR=''`: this is only for validators that own an operator account
   - `OL_TOWER_USE_FIRST_UPSTREAM='--use-first-url'`: this makes sure the tower is using the upstream urls
   - `OL_TOWER_TEST=y`: allows reading mnemonic seed phrase from env
-  > There is a [PR](https://github.com/OLSF/libra/pull/979) that allows reading `MNEM` without setting `TEST=y`
+  > There is a [PR](https://github.com/0LNetworkCommunity/libra/pull/979) that allows reading `MNEM` without setting `TEST=y`
   - `MNEM`: the mnemonic seed phrase generated during account creation
 
-- [Check if an account needs to be created](https://github.com/OLSF/libra/blob/main/ol/documentation/node-ops/tower_mining_VDF_proofs.md)
+- [Check if an account needs to be created](https://github.com/0LNetworkCommunity/libra/blob/main/ol/documentation/node-ops/tower_mining_VDF_proofs.md)
   This step makes sure we have an account and the data directory `OL_DATA_DIR` contains the required files:
   - `./vdf_proofs/proof_0.json` (and potentially other proofs)
   - `./key_store.json`
@@ -97,7 +97,7 @@ Tooling for operations of https://0l.network
   cd $HOME/.0L
   
   # Initialise configs (requires ol version >= 5.0.12)
-  ol init --app --rpc-playlist https://raw.githubusercontent.com/OLSF/seed-peers/main/fullnode_seed_playlist.json
+  ol init --app --rpc-playlist https://raw.githubusercontent.com/0LNetworkCommunity/seed-peers/main/fullnode_seed_playlist.json
 
   # Create the first proof and `account.json`, the following will take about 30-40 minutes
   onboard user
@@ -237,10 +237,10 @@ Run different ol and other make commands inside an isolated container with acces
 ### Miners
 
 - Make sure to set `default_node` and `upstream_nodes` in `~/.0L/0L.toml` with IPs of fullnodes.
-  https://github.com/OLSF/seed-peers/blob/main/fullnode_seed_playlist.json
+  https://github.com/0LNetworkCommunity/seed-peers/blob/main/fullnode_seed_playlist.json
 
 - `TEST` variable should not be included in any services other than `tower`
-  Pending PR https://github.com/OLSF/libra/pull/979
+  Pending PR https://github.com/0LNetworkCommunity/libra/pull/979
 
 ---
 

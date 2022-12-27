@@ -44,7 +44,7 @@ WORKDIR /root/libra
 
 # Fixme(nourspace): depending where these tools are hosted, we might not need to pull
 RUN echo "Checking out '${BRANCH}'..." \
-  && git clone --branch ${BRANCH} --depth 1 https://github.com/OLSF/libra.git ${SOURCE_PATH} \
+  && git clone --branch ${BRANCH} --depth 1 https://github.com/0LNetworkCommunity/libra.git ${SOURCE_PATH} \
   && echo "Commit hash: $(git rev-parse HEAD)"
 
 
