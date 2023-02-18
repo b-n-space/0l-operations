@@ -4,6 +4,8 @@ vars:
   # Extracts values from .env file
   IMAGE:
     sh: grep -v '^#' .env | grep -e "OL_IMAGE" | sed -e 's/.*=//'
+  REPO:
+    sh: grep -v '^#' .env | grep -e "OL_REPO" | sed -e 's/.*=//'
   BRANCH:
     sh: grep -v '^#' .env | grep -e "OL_BRANCH" | sed -e 's/.*=//'
 
@@ -11,19 +13,19 @@ tasks:
   docker:build:
     desc: "Build docker images"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}} .
+      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}} .
       - task docker:build:source
       - task docker:build:builder
 
   docker:build:source:
     desc: "Build docker [source] image"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}}-source --target source .
+      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}}-source --target source .
 
   docker:build:builder:
     desc: "Build docker [builder] image"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --tag {{.IMAGE}}-builder --target builder .
+      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}}-builder --target builder .
 
   docker:push:
     desc: "Push docker image"

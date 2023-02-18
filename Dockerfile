@@ -34,6 +34,7 @@ RUN cargo install sccache
 FROM toolchain as source
 
 # Clone given release tag or branch of this repo
+ARG REPO=https://github.com/0LNetworkCommunity/libra.git
 ARG BRANCH=main
 
 # Add target binaries to PATH
@@ -43,8 +44,8 @@ ENV SOURCE_PATH="/root/libra" \
 WORKDIR /root/libra
 
 # Fixme(nourspace): depending where these tools are hosted, we might not need to pull
-RUN echo "Checking out '${BRANCH}'..." \
-  && git clone --branch ${BRANCH} --depth 1 https://github.com/0LNetworkCommunity/libra.git ${SOURCE_PATH} \
+RUN echo "Checking out '${BRANCH}' from '${REPO}' ..." \
+  && git clone --branch ${BRANCH} --depth 1 ${REPO} ${SOURCE_PATH} \
   && echo "Commit hash: $(git rev-parse HEAD)"
 
 
