@@ -4,7 +4,7 @@ Tooling for operations of https://0l.network
 
 ## Requirements
 
-- Docker 19+
+- [Docker 20+](https://docs.docker.com/get-docker/)
 - [Task](https://taskfile.dev/#/installation)
 - Internet connection
 - Dedicated IP with opened ports (check each service)
@@ -23,7 +23,7 @@ Tooling for operations of https://0l.network
 > These images were built using the [Dockerfile](./Dockerfile) in this repo and come without any guaranties.
 
 - Set these env variables
-  - `OL_REPO` [Optional]: Repository to use. Defaults to `https://github.com/0LNetworkCommunity/libra.git`. This is useful when building forks.
+  - `OL_REPO`: Repository to use. Defaults to `https://github.com/0LNetworkCommunity/libra.git`. This is useful when building forks.
   - `OL_BRANCH`: Release tag or branch to check out and build
   - `OL_IMAGE`: Docker image (`username/image:tag`), used to build/push images, also to run services
 
@@ -58,14 +58,14 @@ Tooling for operations of https://0l.network
   > Create this directory if it does not yet exist
   - `OL_NODE_MODE`: determines node mode `fullnode`, `validator`, `vfn`
 
-- Use docker-compose to manage services: `node`, `tower`, `monitor`
+- Use docker compose to manage services: `node`, `tower`, `monitor`
 
   ```shell
   # Start service(s) in background
-  docker-compose up -d node tower monitor 
+  docker compose up -d node tower monitor 
 
   # Tail logs
-  docker-compose logs -f --tail 50
+  docker compose logs -f --tail 50
   ```
 
 ### Run a Tower (0L Miner) only
@@ -104,17 +104,17 @@ Tooling for operations of https://0l.network
   onboard user
   ```
 
-- Use docker-compose to manage `tower` service
+- Use docker compose to manage `tower` service
 
   ```shell
   # Start Tower service in background
-  docker-compose up -d tower
+  docker compose up -d tower
 
   # Tail logs
-  docker-compose logs -f --tail 50 tower
+  docker compose logs -f --tail 50 tower
   ```
 
-### Docker-Compose commands
+### docker compose commands
 
 This is a list of some useful commands.
 
@@ -122,43 +122,43 @@ This is a list of some useful commands.
 ########## Main Services #########
 
 # Start service(s)
-docker-compose up tower 
+docker compose up tower 
 
 # You can pass one or more services
-docker-compose up node tower monitor
+docker compose up node tower monitor
 
 # Start service(s) in background
-docker-compose up -d node tower monitor 
+docker compose up -d node tower monitor 
 
 # Display all logs
-docker-compose logs tower
+docker compose logs tower
 
 # Tail logs
-docker-compose logs -f --tail 50 node
+docker compose logs -f --tail 50 node
 
 # Force recreate and start service(s)
-docker-compose up -d --force-recreate node 
+docker compose up -d --force-recreate node 
 
 # Stop service(s)
-docker-compose stop node
+docker compose stop node
 
 # Stops containers and removes containers, networks, volumes, and images
 # Data directory on the host specified with `$OL_DATA_DIR` won't be deleted. Only the Docker volume will be unmounted
-docker-compose down
+docker compose down
 
 ########## Utility Services #########
 
 # Start a shell service with all 0L binaries available
 # Useful to run `txs` commands
-docker-compose run --rm shell bash
+docker compose run --rm shell bash
 
 # Start a builder service with all 0L source and binaries available
 # Useful to run `make` commands
-docker-compose run --rm builder bash
+docker compose run --rm builder bash
 
 # Start a builder service and exec into it to keep the container and its files after exiting
-docker-compose up -d builder
-docker-compose exec builder bash
+docker compose up -d builder
+docker compose exec builder bash
 
 # Use Task to start utility services
 task shell

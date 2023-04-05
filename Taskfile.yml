@@ -45,23 +45,23 @@ tasks:
   shell:
     desc: "Start a shell container"
     cmds:
-      - docker-compose up -d shell
-      - docker-compose exec shell bash
+      - docker compose up -d shell
+      - docker compose exec shell bash
 
   source:
     desc: "Start a source container"
     cmds:
-      - docker-compose up -d source
-      - docker-compose exec source bash
+      - docker compose up -d source
+      - docker compose exec source bash
 
   builder:
     desc: "Start a builder container"
     cmds:
-      - docker-compose up -d builder
-      - docker-compose exec builder bash
+      - docker compose up -d builder
+      - docker compose exec builder bash
 
   clean-utils:
     desc: "Clean utility containers"
     cmds:
-      - docker-compose stop shell source builder
-      - docker-compose rm shell source builder
+      - docker compose stop shell source builder
+      - docker compose rm shell source builder
