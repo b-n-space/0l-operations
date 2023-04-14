@@ -60,6 +60,8 @@ RUN RUSTC_WRAPPER=sccache make bins
 ##########   Production image     ##########
 ############################################
 # Todo(nourspace): find a smaller base image
+# build the Rust binaries using the x86_64-unknown-linux-musl target instead of the  default
+# x86_64-unknown-linux-gnu target, since Alpine Linux uses musl-libc instead of glibc for its C
 FROM ubuntu:20.04 AS prod
 
 # We don't persist this env var in production image as we don't have the source files
