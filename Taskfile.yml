@@ -8,6 +8,8 @@ vars:
     sh: grep -v '^#' .env | grep -e "OL_REPO" | sed -e 's/.*=//'
   BRANCH:
     sh: grep -v '^#' .env | grep -e "OL_BRANCH" | sed -e 's/.*=//'
+  TOOLS_IMAGE:
+    sh: grep -v '^#' .env | grep -e "OL_TOOLS_IMAGE" | sed -e 's/.*=//'
 
 tasks:
   docker:build:
@@ -27,6 +29,11 @@ tasks:
     cmds:
       - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}}-builder --target builder .
 
+  docker:build:tools:
+    desc: "Build docker [tools] image"
+    cmds:
+      - docker build -f tools.Dockerfile --tag {{.TOOLS_IMAGE}} .
+
   docker:push:
     desc: "Push docker image"
     cmds:
@@ -41,6 +48,11 @@ tasks:
     desc: "Push docker [builder] image"
     cmds:
       - docker push {{.IMAGE}}-builder
+
+  docker:push:tools:
+    desc: "Push docker [tools] image"
+    cmds:
+      - docker push {{.TOOLS_IMAGE}}
 
   shell:
     desc: "Start a shell container"

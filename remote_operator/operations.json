@@ -1,0 +1,60 @@
+[
+  {
+    "name": "restart",
+    "description": "Restarts node",
+    "method": "post",
+    "type": "cmd",
+    "checks": [
+      "echo checking..."
+    ],
+    "cmd": [
+      "echo restarting..."
+    ]
+  },
+  {
+    "name": "cron_on",
+    "description": "Setup cron",
+    "method": "post",
+    "type": "cmd",
+    "checks": [
+      "echo checking..."
+    ],
+    "cmd": [
+      "echo setting cron..."
+    ]
+  },
+  {
+    "name": "cron_off",
+    "description": "Disable cron",
+    "method": "post",
+    "type": "cmd",
+    "checks": [
+      "echo checking..."
+    ],
+    "cmd": [
+      "echo disabling cron..."
+    ]
+  },
+  {
+    "name": "patch_validator_yaml",
+    "description": "Patch validator.node.yaml",
+    "method": "patch",
+    "type": "patch",
+    "checks": [
+      "echo checking..."
+    ],
+    "filename": "validator.node.yaml",
+    "payload": "str"
+  },
+  {
+    "name": "patch_ol_toml",
+    "description": "Patch 0L.toml",
+    "method": "patch",
+    "type": "patch",
+    "checks": [
+      "echo checking..."
+    ],
+    "filename": "0L.toml",
+    "payload": "str"
+  }
+]
