@@ -12,6 +12,8 @@ x-defaults: &defaults
     nproc: 500000
     nofile: 500000
   entrypoint: [ "" ]
+  environment:
+    RUST_LOG: info
   env_file:
     - "./.env"
 
@@ -31,13 +33,10 @@ services:
     container_name: "0l-${OL_NODE_MODE}"
     command:
       [
-        # "diem-node",
-        # "--config",
-        # "/root/.0L/${OL_NODE_MODE}.node.yaml"
         "libra",
         "node",
         "--config-path",
-        "/root/.libra/validator-docker.yaml"
+        "/root/.libra/validator.yaml"
       ]
     ports:
       - "6180:6180"
