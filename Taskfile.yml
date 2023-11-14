@@ -13,19 +13,19 @@ tasks:
   docker:build:
     desc: "Build docker images"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}} .
+      - docker build --build-arg=BRANCH={{.BRANCH}} --build-arg=REPO={{.REPO}} --tag {{.IMAGE}} .
       - task docker:build:source
       - task docker:build:builder
 
   docker:build:source:
     desc: "Build docker [source] image"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}}-source --target source .
+      - docker build --build-arg=BRANCH={{.BRANCH}} --build-arg=REPO={{.REPO}} --tag {{.IMAGE}}-source --target source .
 
   docker:build:builder:
     desc: "Build docker [builder] image"
     cmds:
-      - docker build --build-arg BRANCH={{.BRANCH}} --build-arg REPO={{.REPO}} --tag {{.IMAGE}}-builder --target builder .
+      - docker build --build-arg=BRANCH={{.BRANCH}} --build-arg=REPO={{.REPO}} --tag {{.IMAGE}}-builder --target builder .
 
   docker:push:
     desc: "Push docker image"

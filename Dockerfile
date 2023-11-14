@@ -1,6 +1,6 @@
 ########## Toolchain (Rust) image ##########
 ############################################
-FROM ubuntu:20.04 AS toolchain
+FROM debian:11 AS toolchain
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -38,10 +38,10 @@ ARG REPO=https://github.com/0LNetworkCommunity/libra.git
 ARG BRANCH=main
 
 # Add target binaries to PATH
-ENV SOURCE_PATH="/root/libra" \
-  PATH="/root/libra/target/release:${PATH}"
+ENV SOURCE_PATH="/root/libra-framework" \
+  PATH="/root/libra-framework/target/release:${PATH}"
 
-WORKDIR /root/libra
+WORKDIR /root/libra-framework
 
 # Fixme(nourspace): depending where these tools are hosted, we might not need to pull
 RUN echo "Checking out '${BRANCH}' from '${REPO}' ..." \
@@ -53,8 +53,15 @@ RUN echo "Checking out '${BRANCH}' from '${REPO}' ..." \
 ############################################
 FROM source as builder
 
-# Build 0L binaries
-RUN RUSTC_WRAPPER=sccache make bins
+# # Build 0L binaries
+# RUN RUSTC_WRAPPER=sccache make bins
+
+# Build the specified Rust packages as release binaries
+RUN cargo build --release \
+     -p libra \
+     -p libra-genesis-tools \
+     -p libra-txs \
+     -p diem-db-tool
 
 
 ##########   Production image     ##########
@@ -62,10 +69,10 @@ RUN RUSTC_WRAPPER=sccache make bins
 # Todo(nourspace): find a smaller base image
 # build the Rust binaries using the x86_64-unknown-linux-musl target instead of the  default
 # x86_64-unknown-linux-gnu target, since Alpine Linux uses musl-libc instead of glibc for its C
-FROM ubuntu:20.04 AS prod
+FROM debian:11-slim AS prod
 
 # We don't persist this env var in production image as we don't have the source files
-ARG SOURCE_PATH="/root/libra"
+ARG SOURCE_PATH="/root/libra-framework"
 
 # Add 0L binaries to PATH
 ENV PATH="${SOURCE_PATH}/target/release:${PATH}"
@@ -78,15 +85,11 @@ RUN apt-get update && apt-get install -y \
 
 # Copy binaries from builder
 COPY --from=builder [ \
-  "${SOURCE_PATH}/target/release/tower", \
-  "${SOURCE_PATH}/target/release/diem-node", \
-  "${SOURCE_PATH}/target/release/db-restore", \
-  "${SOURCE_PATH}/target/release/db-backup", \
-  "${SOURCE_PATH}/target/release/db-backup-verify", \
-  "${SOURCE_PATH}/target/release/ol", \
-  "${SOURCE_PATH}/target/release/txs", \
-  "${SOURCE_PATH}/target/release/onboard", \
+  "${SOURCE_PATH}/target/release/libra", \
+  "${SOURCE_PATH}/target/release/libra-genesis-tools", \
+  "${SOURCE_PATH}/target/release/libra-txs", \
+  "${SOURCE_PATH}/target/release/diem-db-tool", \
   "${SOURCE_PATH}/target/release/" \
 ]
 
-WORKDIR /root/.0L
+WORKDIR /root

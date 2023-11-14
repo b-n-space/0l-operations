@@ -5,8 +5,9 @@ x-defaults: &defaults
   network_mode: host  # Fixme (nourspace): required to detect node processes?
   pid: host           # Fixme (nourspace): required to detect node processes?
   volumes:
-    - "node_data:/root/.0L"
-    - "epoch_archive:/root/epoch-archive"
+    - "node_data:/root/.libra"
+    - "node_source:/root/libra-framework"
+    - "node_recovery:/root/libra-recovery"
   ulimits:
     nproc: 500000
     nofile: 500000
@@ -30,29 +31,35 @@ services:
     container_name: "0l-${OL_NODE_MODE}"
     command:
       [
-        "diem-node",
-        "--config",
-        "/root/.0L/${OL_NODE_MODE}.node.yaml"
+        # "diem-node",
+        # "--config",
+        # "/root/.0L/${OL_NODE_MODE}.node.yaml"
+        "libra",
+        "node",
+        "--config-path",
+        "/root/.libra/validator-docker.yaml"
       ]
     ports:
-      - "6179:6179"
       - "6180:6180"
+      - "6181:6181"
+      - "6182:6182"
       - "8080:8080"
+      - "9101:9101"
 
-  tower:
-    <<: *defaults
-    container_name: 0l-tower
-    command: "tower ${OL_TOWER_OPERATOR} ${OL_TOWER_USE_FIRST_UPSTREAM} ${OL_TOWER_VERBOSE} start"
-    environment:
-      NODE_ENV: "prod"
-      TEST: "${OL_TOWER_TEST-n}"
+  # tower:
+  #   <<: *defaults
+  #   container_name: 0l-tower
+  #   command: "tower ${OL_TOWER_OPERATOR} ${OL_TOWER_USE_FIRST_UPSTREAM} ${OL_TOWER_VERBOSE} start"
+  #   environment:
+  #     NODE_ENV: "prod"
+  #     TEST: "${OL_TOWER_TEST-n}"
 
-  monitor:
-    <<: *defaults
-    container_name: 0l-monitor
-    command: [ "ol", "serve" ]
-    ports:
-      - "3030:3030"
+  # monitor:
+  #   <<: *defaults
+  #   container_name: 0l-monitor
+  #   command: [ "ol", "serve" ]
+  #   ports:
+  #     - "3030:3030"
 
   ########## Utility services #############
 
@@ -77,9 +84,15 @@ volumes:
       type: none
       o: bind
       device: "${OL_DATA_DIR}"
-  epoch_archive:
+  node_source:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: "${OL_EPOCH_ARCHIVE_DIR}"
+      device: "${OL_SOURCE_DIR}"
+  node_recovery:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${OL_RECOVERY_DIR}"
